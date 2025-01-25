@@ -1,6 +1,5 @@
 import css from "./ImageGallery.module.css";
-
-import ImageCard from '../ImageCard/ImageCard';
+import ImageCard from "../ImageCard/ImageCard";
 
 import { useContext } from "react";
 import { imageContext } from "../../providers/ImageProvider";
