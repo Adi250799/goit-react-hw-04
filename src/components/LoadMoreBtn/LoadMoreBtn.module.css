@@ -1,20 +1,19 @@
-.wrapper {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding-top: 10px;
-  }
-  .button {
-    background-color: rgb(28, 137, 173);
-    border: 1px solid black;
+.Button {
+    background-image: linear-gradient(to right, #614385 0%, #516395  51%, #614385  100%);
+    margin: 10px;
+    margin-top: 20px;
+    padding: 15px 45px;
+    text-align: center;
+    text-transform: uppercase;
+    transition: 0.5s;
+    background-size: 200% auto;
+    color: white;            
+    box-shadow: 0 0 20px #eee;
     border-radius: 10px;
-    width: 150px;
-    height: 50px;
-    font-size: 1.2em;
-    box-shadow: 3px 4px 7px -1px rgba(0, 0, 0, 1);
-    cursor: pointer;
-  }
-  
-  .button:hover {
-    filter: brightness(150%);
-  }
+}
+
+.Button:hover {
+    background-position: right center; /* change the direction of the change here */
+    color: #fff;
+    text-decoration: none;
+}

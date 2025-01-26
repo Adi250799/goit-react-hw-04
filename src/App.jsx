@@ -1,43 +1,43 @@
-import { useGetImages } from "./Hooks/useGetImages";
+import './App.css'
+import { useState } from 'react'
+import { useImage } from './ImageProvider'
+import SearchBar from './components/SearchBar/SearchBar'
+import ImageGallery from './components/ImageGallery/ImageGallery'
+import LoadMoreBtn from './components/LoadMoreBtn/LoadMoreBtn'
+import ImageModal from './components/ImageModal/ImageModal'
+import { ThreeDots } from 'react-loader-spinner'
 
-import { SearchBar } from "./components/SearchBar/SearchBar";
-import { ErrorMessage } from "./components/ErrorMessage/ErrorMessage";
-import { Loader } from "./components/Loader/Loader";
-import { ImageGallery } from "./components/ImageGallery/ImageGallery";
-import { LoadMoreBtn } from "./components/LoadMoreBtn/LoadMoreBtn";
-import { ModalWindow } from "./components/ModalWindow/ModalWindow";
-import { useContext, useState } from "react";
-import { imageContext } from "./providers/ImageProvider";
+function App() {
+  const [images, setImages] = useState([]);
+  const [query, setQuery] = useState("");
+  const [page, setPage] = useState(0);
+  const { isError, isLoading } = useImage();
+  const [modalData, setModalData] = useState(null);
 
-export const App = () => {
-  const { gallery, isLoading, error, getImgs, getMoreImg } = useGetImages();
-  const [modalIsOpen, setIsOpen] = useState(false);
-  const { image } = useContext(imageContext);
-
-  const openModal = (src) => {
-    setIsOpen(true);
-    console.log(src);
+  const updateGallery = (img) => {
+    setImages(img);
   };
 
-  const closeModal = () => {
-    setIsOpen(false);
+  const addMoreImages = (img) => {
+    setImages((prev) => {
+      return prev.concat(img);
+    });
   };
+
+  const openModal = (image) => {setModalData(image)};
+
+  const closeModal = () => {setModalData(null)};
 
   return (
     <>
-      <SearchBar getImgs={getImgs} />
-      {error ? (
-        <ErrorMessage />
-      ) : (
-        <ImageGallery gallery={gallery} openModal={openModal} />
-      )}
-      {isLoading ? <Loader /> : null}
-      {gallery.length > 0 ? (
-        <LoadMoreBtn getMoreImg={getMoreImg} />
-      ) : error ? (
-        <ErrorMessage />
-      ) : null}
-      <ModalWindow src={image} open={modalIsOpen} close={closeModal} />
+    <SearchBar update={updateGallery} query={setQuery} page={setPage}/>
+    <ImageGallery imagesArray={images} imageClick={openModal}/>
+    {isLoading && <div className='Loader'><ThreeDots /></div>}
+    {images.length > 0 && <LoadMoreBtn query={query} page={page} update={addMoreImages} setNewPage={setPage}/>}
+    {(isError) && <p>You can&apos;t leave field empty </p>}
+    {modalData && <ImageModal data={modalData} onClose={closeModal}/>}
     </>
-  );
-};
+  )
+}
+
+export default App

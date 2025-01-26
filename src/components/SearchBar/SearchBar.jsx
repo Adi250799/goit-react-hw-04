@@ -1,40 +1,71 @@
-import css from "./SearchBar.module.css";
-import { CiSearch } from "react-icons/ci";
-import toast, { Toaster } from "react-hot-toast";
-import { useContext } from "react";
-import { queryContext } from "../../providers/ContextProvider";
-import { scrollToBottom } from "../../Hooks/useGetImages";
+import css from './SearchBar.module.css'    
+import axios from 'axios';
+import { nanoid } from 'nanoid';
+import { useImage } from '../../ImageProvider';
 
-export const SearchBar = ({ getImgs }) => {
-  const { setSearchQuery } = useContext(queryContext);
+const unSplashKey = "SPJbekjuZIcUi4EtwkE7gaqKyCgOYfEyzx_gzszcD_s4";
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const { search } = e.target.elements;
-    search.value === ""
-      ? toast.error("Please enter searching phase!")
-      : getImgs(search.value).then(scrollToBottom);
-    setSearchQuery(search.value);
-    search.value = "";
-  };
-  return (
-    <header className={css.header}>
-      <div>
-        <Toaster position="top-right" reverseOrder={false} />
-      </div>
-      <form className={css.form} onSubmit={handleSubmit}>
-        <button className={css.button} type="submit">
-          <CiSearch size={20} />
-        </button>
-        <input
-          name="search"
-          className={css.input}
-          type="text"
-          autoComplete="off"
-          autoFocus
-          placeholder="Search images and photos"
-        />
-      </form>
-    </header>
-  );
-};
+const SearchBar = ({ update, query, page }) => {
+    const { ErrorTrue, ErrorFalse, LoadingTrue, LoadingFalse } = useImage();   
+    const searchID = nanoid();
+
+    const getData = async (e) => {
+        e.preventDefault();
+        const searchQuery = e.target.elements[0].value;
+        if (searchQuery !== "") {
+            ErrorFalse();
+            LoadingTrue();
+            const data = await axios.get(`https://api.unsplash.com/search/photos?page=1&per_page=16&query=${searchQuery}&client_id=${unSplashKey}`)
+                                    .then((response) => {return response.data.results});
+            const urlsArray = [];
+            data.map((item) => urlsArray.push(item));
+            LoadingFalse();
+            update(urlsArray);
+            query(searchQuery);
+            page(1);
+        } else {
+            update([]);
+            ErrorTrue();
+        }
+      };
+
+      /* Second Solution */
+    //   const getData = async (e) => {
+    //     e.preventDefault();
+    //     const searchQuery = e.target.elements[0].value;
+        
+    //     try {
+    //         ErrorFalse();
+    //         LoadingTrue();
+    //         const data = await axios.get(`https://api.unsplash.com/search/photos?page=1&per_page=16&query=${searchQuery}&client_id=${unSplashKey}`)
+    //                                 .then((response) => {return response.data.results});
+    //         const urlsArray = [];
+    //         data.map((item) => urlsArray.push(item));
+    //         LoadingFalse();
+    //         update(urlsArray);
+    //         query(searchQuery);
+    //         page(1);
+    //     } catch (error) {
+    //         console.log(error)
+    //         ErrorTrue();
+    //     }
+    //   };  
+
+    return (
+        <header>
+            <form onSubmit={getData} className={css.FormBox}>
+                <input
+                className={css.FormInput}
+                id={searchID}   
+                type="text"
+                autoComplete="off"
+                autoFocus
+                placeholder="Search images and photos"
+                />
+                <button type="submit">Search</button>
+            </form>
+        </header>
+    );
+}
+
+export default SearchBar
