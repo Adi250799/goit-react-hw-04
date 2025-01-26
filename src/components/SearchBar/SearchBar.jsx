@@ -3,7 +3,7 @@ import axios from 'axios';
 import { nanoid } from 'nanoid';
 import { useImage } from '../../ImageProvider';
 
-const unSplashKey = "SPJbekjuZIcUi4EtwkE7gaqKyCgOYfEyzx_gzszcD_s4";
+const unSplashKey = "PJbekjuZIcUi4EtwkE7gaqKyCgOYfEyzx_gzszcD_s4";  // Updated Access Key
 
 const SearchBar = ({ update, query, page }) => {
     const { ErrorTrue, ErrorFalse, LoadingTrue, LoadingFalse } = useImage();   
@@ -27,29 +27,7 @@ const SearchBar = ({ update, query, page }) => {
             update([]);
             ErrorTrue();
         }
-      };
-
-      /* Second Solution */
-    //   const getData = async (e) => {
-    //     e.preventDefault();
-    //     const searchQuery = e.target.elements[0].value;
-        
-    //     try {
-    //         ErrorFalse();
-    //         LoadingTrue();
-    //         const data = await axios.get(`https://api.unsplash.com/search/photos?page=1&per_page=16&query=${searchQuery}&client_id=${unSplashKey}`)
-    //                                 .then((response) => {return response.data.results});
-    //         const urlsArray = [];
-    //         data.map((item) => urlsArray.push(item));
-    //         LoadingFalse();
-    //         update(urlsArray);
-    //         query(searchQuery);
-    //         page(1);
-    //     } catch (error) {
-    //         console.log(error)
-    //         ErrorTrue();
-    //     }
-    //   };  
+    };
 
     return (
         <header>
@@ -68,4 +46,4 @@ const SearchBar = ({ update, query, page }) => {
     );
 }
 
-export default SearchBar
+export default SearchBar;
